@@ -248,6 +248,7 @@ under the License.
                         <exclude>**/*.txt</exclude>
                         <exclude>flink-connector-mysql-cdc/src/test/resources/file/*.json</exclude>
                         <exclude>flink-connector-db2-cdc/src/test/resources/db2_server/Dockerfile</exclude>
+                        <exclude>jenkins.pipeline</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -621,6 +622,19 @@ under the License.
                 <module>flink-connector-oceanbase-cdc</module>
                 <module>flink-sql-connector-oceanbase-cdc</module>
             </modules>
+        </profile>
+        <profile>
+            <id>attentive</id>
+            <distributionManagement>
+                <repository>
+                    <id>attentive-third-party-forks</id>
+                    <url>https://attentivemobile.jfrog.io/artifactory/attentive-third-party-forks/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>attentive-third-party-forks</id>
+                    <url>https://attentivemobile.jfrog.io/artifactory/attentive-third-party-forks/</url>
+                </snapshotRepository>
+            </distributionManagement>
         </profile>
     </profiles>
 </project>

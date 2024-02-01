@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'FORK_BRANCH', defaultValue: 'sandeep/DLP-539dbZFix', description: 'branch to build and deploy')
+    }
+    stages {
+        stage('Checkout') {
+          steps {
+    		    dir('forkRepo') {
+        		  git url: 'git@github.com:attentive-mobile/flink-cdc-connectors.git',
+        		      branch: 'master'
+    		    }
+          }
+        }
+      stage('Build') {
+        environment {
+                      ARTIFACTORY_USER = 'jenkins'
+                      ARTIFACTORY_ACCESS_TOKEN = credentials('artifactory_access_token')
+                      ARTIFACTORY_PUBLISH_USER = 'jenkins-publish'
+                      ARTIFACTORY_PUBLISH_ACCESS_TOKEN = credentials('artifactory_publish_access_token')
+
+                  }
+	      steps {
+          script {
+               sh """
+                #!/bin/bash
+                echo "Checking out Flink CDC Connectors fork"
+                cd forkRepo
+                git remote update
+                git fetch
+                git checkout origin/${params.FORK_BRANCH}
+
+                #echo "Building Pulsar Flink connector fork"
+                #mvn -q clean install -pl flink-connector-pulsar -am -e -DskipTests -DskipITs
+
+                echo "Building and Publishing to artifactory"
+                mvn -Dartifactory_user=${ARTIFACTORY_USER} \
+                    -Dartifactory_access_token=\${ARTIFACTORY_ACCESS_TOKEN} \
+                    -Dartifactory_publish_user=${ARTIFACTORY_PUBLISH_USER} \
+                    -Dartifactory_publish_access_token=\${ARTIFACTORY_PUBLISH_ACCESS_TOKEN} \
+                     clean deploy -P attentive -DskipTests -DskipITs
+               """
+               }
+             }
+           }
+      }
+}
