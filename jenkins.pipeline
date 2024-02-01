@@ -34,7 +34,7 @@ pipeline {
                 #mvn -q clean install -pl flink-connector-pulsar -am -e -DskipTests -DskipITs
 
                 echo "Building and Publishing to artifactory"
-                mvn -Dartifactory_user=${ARTIFACTORY_USER} \
+                mvn -s settings.xml -Dartifactory_user=${ARTIFACTORY_USER} \
                     -Dartifactory_access_token=\${ARTIFACTORY_ACCESS_TOKEN} \
                     -Dartifactory_publish_user=${ARTIFACTORY_PUBLISH_USER} \
                     -Dartifactory_publish_access_token=\${ARTIFACTORY_PUBLISH_ACCESS_TOKEN} \
