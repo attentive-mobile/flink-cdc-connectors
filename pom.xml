@@ -249,6 +249,7 @@ under the License.
                         <exclude>flink-connector-mysql-cdc/src/test/resources/file/*.json</exclude>
                         <exclude>flink-connector-db2-cdc/src/test/resources/db2_server/Dockerfile</exclude>
                         <exclude>jenkins.pipeline</exclude>
+                        <exclude>settings.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
