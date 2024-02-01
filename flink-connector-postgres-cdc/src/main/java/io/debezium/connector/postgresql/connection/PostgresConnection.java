@@ -49,6 +49,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 /**
  * {@link JdbcConnection} connection extension used for connecting to Postgres instances.
@@ -63,6 +64,11 @@ public class PostgresConnection extends JdbcConnection {
     public static final String CONNECTION_VALIDATE_CONNECTION = "Debezium Validate Connection";
     public static final String CONNECTION_HEARTBEAT = "Debezium Heartbeat";
     public static final String CONNECTION_GENERAL = "Debezium General";
+
+    private static final Pattern FUNCTION_DEFAULT_PATTERN =
+                        Pattern.compile("^[(]?[A-Za-z0-9_.]+\\((?:.+(?:, ?.+)*)?\\)");
+    private static final Pattern EXPRESSION_DEFAULT_PATTERN =
+                        Pattern.compile("\\(+(?:.+(?:[+ - * / < > = ~ ! @ # % ^ & | ` ?] ?.+)+)+\\)");
 
     private static Logger LOGGER = LoggerFactory.getLogger(PostgresConnection.class);
 
@@ -820,6 +826,15 @@ public class PostgresConnection extends JdbcConnection {
     @Override
     protected boolean isTableType(String tableType) {
         return "TABLE".equals(tableType) || "PARTITIONED TABLE".equals(tableType);
+    }
+
+    @Override
+    protected boolean isTableUniqueIndexIncluded(String indexName, String columnName) {
+        if (columnName != null) {
+            return !FUNCTION_DEFAULT_PATTERN.matcher(columnName).matches()
+                    && !EXPRESSION_DEFAULT_PATTERN.matcher(columnName).matches();
+        }
+        return false;
     }
 
     @FunctionalInterface
