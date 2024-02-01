@@ -629,6 +629,7 @@ under the License.
                 <repository>
                     <id>attentive-third-party-forks</id>
                     <url>https://attentivemobile.jfrog.io/artifactory/attentive-third-party-forks/</url>
+
                 </repository>
                 <snapshotRepository>
                     <id>attentive-third-party-forks</id>

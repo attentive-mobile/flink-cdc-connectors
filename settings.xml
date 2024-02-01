@@ -1,0 +1,52 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!--
+        Maven settings used by the Jenkins Docker build (via Makefile and Makefile-k8s).
+    -->
+
+    <localRepository>/usr/share/maven/ref/repository</localRepository>
+
+    <!--
+        This is a mirror of Maven Central in our Artifactory instance. The presence of this means that Maven Central
+        will not be searched directly. This allows us to safeguard against deleted dependencies from central as well as
+        supply chain attacks on our own group ID. The mirror requires authentication. The authentication is provided by
+        the corresponding <server> block below. The <id> element values must match.
+    -->
+    <mirrors>
+        <mirror>
+            <id>maven-central-proxy</id>
+            <url>https://attentivemobile.jfrog.io/artifactory/maven-central/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    <!--
+        The ${artifactory_user} and ${artifactory_access_token} are properties passed into the Maven command line (via
+        -D flags). The values are retrieved from Jenkins environment variables. See Makefile or Makefile-k8s for where
+        this occurs.
+
+        The <id> elements are referred to in the <mirrors> section as well as any <repository> or <pluginRepository>
+        sections in the main Maven build files.
+
+        The user and access token and saved in 1Password in the DevOps vault.
+    -->
+    <servers>
+        <server>
+            <id>maven-central-proxy</id>
+            <username>${artifactory_user}</username>
+            <password>${artifactory_access_token}</password>
+        </server>
+        <server>
+            <id>attentive-mobile-maven</id>
+            <username>${artifactory_user}</username>
+            <password>${artifactory_access_token}</password>
+        </server>
+        <server>
+            <id>attentive-third-party-forks</id>
+            <username>${artifactory_user}</username>
+            <password>${artifactory_access_token}</password>
+        </server>
+    </servers>
+</settings>
